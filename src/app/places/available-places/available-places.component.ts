@@ -15,14 +15,17 @@ import { PlacesContainerComponent } from '../places-container/places-container.c
 })
 export class AvailablePlacesComponent implements OnInit {
   places = signal<Place[] | undefined>(undefined);
+  isFetching = signal(false);
   private httpClient = inject(HttpClient);
   private destroy = inject(DestroyRef);
 
   ngOnInit(): void {
+    this.isFetching.set(true);
       const sub = this.httpClient.get<{places: Place[]}>('http://localhost:3000/places').pipe(
         map(res => res.places)
       ).subscribe({
-        next: (places) => this.places.set(places)
+        next: (places) => this.places.set(places),
+        complete: () => this.isFetching.set(false)
       });
 
       this.destroy.onDestroy(() => {
