@@ -18,8 +18,12 @@ export class AvailablePlacesComponent implements OnInit {
   private destroy = inject(DestroyRef);
 
   ngOnInit(): void {
-      const sub = this.httpClient.get<{places: Place[]}>('http://localhost:3000/places').subscribe({
-        next: (res) => console.log(res.places)
+      const sub = this.httpClient.get<{places: Place[]}>('http://localhost:3000/places', {
+        observe: 'response'
+        // observe: 'events'
+      }).subscribe({
+        next: (httpRes) => console.log(httpRes)
+        // next: (res) => console.log(res.places)
       });
 
       this.destroy.onDestroy(() => {
